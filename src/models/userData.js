@@ -152,7 +152,7 @@ UserSchema.statics.addToList = function(id, items){
 
             for(item of items){
                 console.log(item);
-                user.shoppingList = user.shoppingList.concat([{name: item.name, quantity: item.quantity}])
+                user.shoppingList = user.shoppingList.concat([{name: item.name.toUpperCase(), quantity: item.quantity}])
             }
 
             user.save().then((user)=>{
@@ -189,39 +189,17 @@ UserSchema.statics.removeFromList = function(id, itemId){
 
 UserSchema.statics.updateList = function(id,item){
 
-    return new Promise((resolve, reject)=>{
-        // UserModel.findById(id).then((user)=>{
+    return new Promise((resolve, reject)=>{    
 
-        //     console.log(item.quantity);
-
-        //     // user.updateOne({shoppingList._id: item._id,
-        //     //     $set: {
-        //     //         shoppingList: {_id: item._id}, shoppingList: {quantity: item.quantity}
-        //     //     }
-        //     // }).then((user)=>{
-        //     //     resolve(user);
-        //     // }).catch((err)=>{
-        //     //     reject(err);
-        //     // });
-
-
-        //     user.updateOne({'shoppingList._id': item._id}, {'$set': {
-        //         'shoppingList.$.name': item.name,
-        //         'shoppingList.$.quantity': item.quantity
-        //     }}, function(err) {
-
-        //     })
-
-        // })
-
-        UserModel.findOneAndUpdate({_id: id},
-            {$set: {"shoppingList.$[el].quantity": item.quantity } },
-            { 
-                arrayFilters: [{ "el._id": item._id }],
-                new: true
-              }
+        UserModel.findOneAndUpdate({"_id": id,"shoppingList._id": item._id},
+            {$set: {"shoppingList.$.name":item.name,"shoppingList.$.quantity": item.quantity}}, 
+            function(error, success) {
+                if (error) reject(error)
+        
+                resolve(success)
+            }
             )
-            
+
     })
 
 }

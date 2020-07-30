@@ -147,6 +147,8 @@ app.post('/user/removefromlist',(req,res)=>{
 
 app.post('/user/updateList',(req,res)=>{
 
+  // console.log(req.body)
+
   UserModel.updateList(req.body.id, req.body.item).then((data)=>{
     res.send(data);
   }).catch(err=>{
